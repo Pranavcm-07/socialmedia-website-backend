@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
-    firstname: {
+    firstName: {
       type: String,
       required: true,
       min: 2,
       max: 50,
     },
-    lastname: {
+    lastName: {
       type: String,
       required: true,
       min: 2,
@@ -17,14 +17,15 @@ const UserSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
+      max: 50,
       unique: true,
     },
     password: {
       type: String,
-      require: true,
-      min: 10,
+      required: true,
+      min: 5,
     },
-    picturepath: {
+    picturePath: {
       type: String,
       default: "",
     },
@@ -33,13 +34,12 @@ const UserSchema = new mongoose.Schema(
       default: [],
     },
     location: String,
-    ocupation: String,
-    viewprofile: Number,
+    occupation: String,
+    viewedProfile: Number,
     impressions: Number,
   },
   { timestamps: true }
 );
 
 const User = mongoose.model("User", UserSchema);
-
 export default User;
