@@ -87,11 +87,13 @@ export const addComments = async (req, res) => {
     const { id } = req.params;
     const post = await Post.findById(id);
     if (!post) return res.status(404).json({ err: "post not found" });
-    const { userId, comment, userPicturePath } = req.body;
+    const { userId, comment, userPicturePath, firstName, lastName } = req.body;
     const newComment = {
       userId,
       comment,
       userPicturePath,
+      firstName,
+      lastName,
     };
     post.comments.push(newComment);
     const updatedPost = await post.save();

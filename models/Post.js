@@ -29,6 +29,8 @@ const postSchema = mongoose.Schema(
           required: true,
         },
         userPicturePath: String,
+        firstName: String,
+        lastName: String,
         comment: {
           type: String,
         },
