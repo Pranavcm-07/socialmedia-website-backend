@@ -71,3 +71,32 @@ export const likePost = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+export const getComments = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    if (!post) return res.status(400).json({ err: "post not found" });
+    const comments = await post.comments;
+    return res.status(200).json({ comments });
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
+export const addComments = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    if (!post) return res.status(404).json({ err: "post not found" });
+    const { userId, comment, userPicturePath } = req.body;
+    const newComment = {
+      userId,
+      comment,
+      userPicturePath,
+    };
+    post.comments.push(newComment);
+    const updatedPost = await post.save();
+    res.status(200).json(updatedPost);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
