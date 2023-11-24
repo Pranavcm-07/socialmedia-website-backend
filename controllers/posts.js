@@ -71,11 +71,24 @@ export const likePost = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+
+export const deletePost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ err: "post not found" });
+    await Post.findByIdAndDelete(postId);
+    res.status(200).json({ message: "post deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const getComments = async (req, res) => {
   try {
     const { id } = req.params;
     const post = await Post.findById(id);
-    if (!post) return res.status(400).json({ err: "post not found" });
+    if (!post) return res.status(404).json({ err: "post not found" });
     const comments = await post.comments;
     return res.status(200).json({ comments });
   } catch (err) {

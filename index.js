@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
@@ -42,6 +43,12 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINAY_CLOUD_NAME,
+  api_key: process.env.CLOUDINAY_API_KEY,
+  api_secret: process.env.CLOUDINAY_API_SECRET,
+});
 
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), register);
