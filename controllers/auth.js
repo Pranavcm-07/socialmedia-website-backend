@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import cloudinary from "../utils/cloudinary.js";
 
 /* REGISTER USER */
 export const register = async (req, res) => {
@@ -52,5 +53,23 @@ export const login = async (req, res) => {
     res.status(200).json({ token, user });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+export const signatureUpload = async (req, res) => {
+  try {
+    const { folder } = req.body;
+    console.log(folder);
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const signature = cloudinary.utils.api_sign_request(
+      {
+        timestamp,
+        folder,
+      },
+      process.env.CLOUDINARY_API_SECRET
+    );
+    res.status(200).json({ timestamp, signature });
+  } catch (err) {
+    res.status(500).json({ err: err.message });
   }
 };
