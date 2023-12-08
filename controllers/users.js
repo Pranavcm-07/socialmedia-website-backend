@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Post from "../models/Post.js";
 
 /* READ */
 export const getUser = async (req, res) => {
@@ -71,7 +72,25 @@ export const updateProfile = async (req, res) => {
       { picturePath: picturePath },
       { new: true }
     );
-    res.status(200).json(updatedUser);
+    const posts = await Post.find({ userId: userId });
+    await Promise.all(
+      posts.map(async (post) => {
+        return await Post.findByIdAndUpdate(
+          post._id,
+          {
+            userPicturePath: picturePath,
+          },
+          { new: true }
+        );
+      })
+    );
+    const updatedPosts = await Post.find();
+    // Promise.all(posts.map(async(post)=>{
+    //   post.comments.map((_id)=>{
+    //     _id===userId && return {}
+    //   })
+    // }))
+    res.status(200).json({ updatedUser, updatedPosts });
   } catch (err) {
     res.status(500).json({ err: err.message });
   }
