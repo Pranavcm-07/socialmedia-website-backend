@@ -73,6 +73,7 @@ export const updateProfile = async (req, res) => {
       { new: true }
     );
     const posts = await Post.find({ userId: userId });
+    const allPosts = await Post.find();
     await Promise.all(
       posts.map(async (post) => {
         return await Post.findByIdAndUpdate(
@@ -84,12 +85,20 @@ export const updateProfile = async (req, res) => {
         );
       })
     );
+    await Promise.all(
+      allPosts.map(async (post) => {
+        const filteredComments = post.comments.filter((comment) => {
+          return comment.userId === userId;
+        });
+        if (filteredComments.length > 0) {
+          filteredComments.forEach((comment) => {
+            comment.userPicturePath = picturePath;
+          });
+        }
+        await post.save();
+      })
+    );
     const updatedPosts = await Post.find();
-    // Promise.all(posts.map(async(post)=>{
-    //   post.comments.map((_id)=>{
-    //     _id===userId && return {}
-    //   })
-    // }))
     res.status(200).json({ updatedUser, updatedPosts });
   } catch (err) {
     res.status(500).json({ err: err.message });
